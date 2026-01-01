@@ -2,7 +2,7 @@
   "name": "SniffSnax - Can My Dog Eat This?",
   "short_name": "SniffSnax",
   "description": "Instant pet food safety checker. Find out if foods are safe, caution, or toxic for your dog.",
-  "start_url": "/",
+  "start_url": "/app.html",
   "display": "standalone",
   "background_color": "#f8fafc",
   "theme_color": "#3b82f6",

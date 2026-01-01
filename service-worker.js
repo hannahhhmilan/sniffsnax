@@ -2,6 +2,7 @@ const CACHE_NAME = 'sniffsnax-v1.1.0';
 const STATIC_ASSETS = [
   '/',
   '/index.html',
+  '/app.html',
   '/manifest.json',
   '/icons/icon-192.png',
   '/icons/icon-512.png'
@@ -108,7 +109,7 @@ self.addEventListener('fetch', (event) => {
             
             // Return offline fallback for navigation requests
             if (request.mode === 'navigate') {
-              return caches.match('/index.html');
+              return caches.match('/app.html');
             }
             
             throw error;

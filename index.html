@@ -4,1014 +4,547 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   
-  <!-- Primary Meta Tags -->
-  <title>SniffSnax - Can My Dog Eat This?</title>
-  <meta name="title" content="SniffSnax - Can My Dog Eat This?">
-  <meta name="description" content="Instant pet food safety checker. Find out if foods are safe, caution, or toxic for your dog.">
+  <title>SniffSnax — Can My Dog Eat This?</title>
+  <meta name="description" content="Instant pet food safety checker. Find out if foods are safe, caution, or toxic for your dog in 2 seconds.">
   
   <!-- PWA Meta Tags -->
-  <meta name="theme-color" content="#3b82f6">
+  <meta name="theme-color" content="#f59e0b">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
-  <meta name="apple-mobile-web-app-title" content="SniffSnax">
-  <meta name="mobile-web-app-capable" content="yes">
   
-  <!-- PWA Manifest -->
-  <link rel="manifest" href="manifest.json">
-  
-  <!-- Favicon & Icons -->
-  <link rel="icon" type="image/png" sizes="32x32" href="icons/icon-32.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="icons/icon-16.png">
-  <link rel="apple-touch-icon" sizes="180x180" href="icons/icon-180.png">
-  <link rel="apple-touch-icon" sizes="152x152" href="icons/icon-152.png">
-  <link rel="apple-touch-icon" sizes="120x120" href="icons/icon-120.png">
-  
-  <!-- Open Graph / Social -->
+  <!-- Open Graph -->
   <meta property="og:type" content="website">
-  <meta property="og:title" content="SniffSnax - Can My Dog Eat This?">
-  <meta property="og:description" content="Instant pet food safety checker for dogs. Safe, caution, or toxic - know before you feed.">
+  <meta property="og:title" content="SniffSnax — Can My Dog Eat This?">
+  <meta property="og:description" content="Instant pet food safety checker for dogs. Safe, caution, or toxic — know before you feed.">
   <meta property="og:image" content="icons/og-image.png">
+  
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" sizes="32x32" href="icons/icon-32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="icons/icon-180.png">
   
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
   
-  <!-- React -->
-  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-  
   <style>
-    /* Prevent pull-to-refresh on mobile */
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+    
+    * {
+      -webkit-tap-highlight-color: transparent;
+    }
+    
     body {
-      overscroll-behavior-y: contain;
+      font-family: 'Inter', sans-serif;
+      -webkit-font-smoothing: antialiased;
+      overscroll-behavior: none;
     }
     
-    /* iOS safe areas */
-    @supports (padding: max(0px)) {
-      .safe-area-inset-bottom {
-        padding-bottom: max(0.5rem, env(safe-area-inset-bottom));
-      }
+    .gradient-bg {
+      background: linear-gradient(135deg, #fef3c7 0%, #fed7aa 50%, #fde68a 100%);
+      min-height: 100vh;
     }
     
-    /* Splash screen */
-    #splash {
-      position: fixed;
-      inset: 0;
-      background: linear-gradient(135deg, #fef3c7 0%, #fed7aa 100%);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      z-index: 9999;
-      transition: opacity 0.3s ease-out;
+    .floating {
+      animation: floating 3s ease-in-out infinite;
     }
     
-    #splash.hidden {
-      opacity: 0;
-      pointer-events: none;
-    }
-    
-    #splash .logo {
-      font-size: 4rem;
-      animation: bounce 1s ease-in-out infinite;
-    }
-    
-    @keyframes bounce {
+    @keyframes floating {
       0%, 100% { transform: translateY(0); }
       50% { transform: translateY(-10px); }
     }
     
-    /* Custom scrollbar */
-    ::-webkit-scrollbar {
-      width: 4px;
+    .fade-in {
+      animation: fadeIn 0.6s ease-out forwards;
+      opacity: 0;
     }
     
-    ::-webkit-scrollbar-track {
-      background: transparent;
+    .fade-in-delay-1 { animation-delay: 0.1s; }
+    .fade-in-delay-2 { animation-delay: 0.2s; }
+    .fade-in-delay-3 { animation-delay: 0.3s; }
+    .fade-in-delay-4 { animation-delay: 0.4s; }
+    
+    @keyframes fadeIn {
+      to { opacity: 1; transform: translateY(0); }
+      from { opacity: 0; transform: translateY(20px); }
     }
     
-    ::-webkit-scrollbar-thumb {
-      background: #cbd5e1;
-      border-radius: 4px;
+    .phone-mockup {
+      background: linear-gradient(180deg, #1a1a1a 0%, #0a0a0a 100%);
+      border-radius: 38px;
+      padding: 8px;
+      box-shadow: 
+        0 25px 50px -12px rgba(0, 0, 0, 0.4),
+        0 0 0 1px rgba(255, 255, 255, 0.1),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+      position: relative;
+    }
+    
+    @media (min-width: 640px) {
+      .phone-mockup {
+        border-radius: 44px;
+        padding: 10px;
+      }
+    }
+    
+    @media (min-width: 768px) {
+      .phone-mockup {
+        border-radius: 50px;
+        padding: 11px;
+      }
+    }
+    
+    @media (min-width: 1024px) {
+      .phone-mockup {
+        border-radius: 54px;
+        padding: 12px;
+      }
+    }
+    
+    .phone-screen {
+      border-radius: 30px;
+      overflow: hidden;
+      position: relative;
+    }
+    
+    @media (min-width: 640px) {
+      .phone-screen {
+        border-radius: 35px;
+      }
+    }
+    
+    @media (min-width: 768px) {
+      .phone-screen {
+        border-radius: 40px;
+      }
+    }
+    
+    @media (min-width: 1024px) {
+      .phone-screen {
+        border-radius: 44px;
+      }
+    }
+    
+    /* Dynamic Island */
+    .phone-screen::before {
+      content: '';
+      position: absolute;
+      top: 8px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 70px;
+      height: 22px;
+      background: #000;
+      border-radius: 14px;
+      z-index: 10;
+    }
+    
+    @media (min-width: 640px) {
+      .phone-screen::before {
+        top: 10px;
+        width: 80px;
+        height: 26px;
+        border-radius: 16px;
+      }
+    }
+    
+    @media (min-width: 768px) {
+      .phone-screen::before {
+        top: 11px;
+        width: 90px;
+        height: 28px;
+        border-radius: 18px;
+      }
+    }
+    
+    @media (min-width: 1024px) {
+      .phone-screen::before {
+        top: 12px;
+        width: 100px;
+        height: 32px;
+        border-radius: 20px;
+      }
+    }
+    
+    /* Screen glass reflection */
+    .phone-screen::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 50%;
+      background: linear-gradient(180deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0) 100%);
+      pointer-events: none;
+      z-index: 5;
+      border-radius: 30px 30px 0 0;
+    }
+    
+    @media (min-width: 640px) {
+      .phone-screen::after {
+        border-radius: 35px 35px 0 0;
+      }
+    }
+    
+    @media (min-width: 768px) {
+      .phone-screen::after {
+        border-radius: 40px 40px 0 0;
+      }
+    }
+    
+    @media (min-width: 1024px) {
+      .phone-screen::after {
+        border-radius: 44px 44px 0 0;
+      }
+    }
+    
+    /* Side buttons */
+    .phone-mockup::before {
+      content: '';
+      position: absolute;
+      right: -2px;
+      top: 22%;
+      width: 3px;
+      height: 12%;
+      background: linear-gradient(180deg, #2a2a2a 0%, #1a1a1a 100%);
+      border-radius: 0 2px 2px 0;
+    }
+    
+    .phone-mockup::after {
+      content: '';
+      position: absolute;
+      left: -2px;
+      top: 18%;
+      width: 3px;
+      height: 8%;
+      background: linear-gradient(180deg, #2a2a2a 0%, #1a1a1a 100%);
+      border-radius: 2px 0 0 2px;
+      box-shadow: 0 50px 0 #222;
+    }
+    
+    /* Safe area for notched phones */
+    @supports (padding: max(0px)) {
+      .safe-top {
+        padding-top: max(1rem, env(safe-area-inset-top));
+      }
+      .safe-bottom {
+        padding-bottom: max(1rem, env(safe-area-inset-bottom));
+      }
+    }
+    
+    /* Smooth scroll */
+    html {
+      scroll-behavior: smooth;
+    }
+    
+    /* Better touch targets */
+    a, button {
+      min-height: 44px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
     }
   </style>
 </head>
-<body>
-  <!-- Splash Screen -->
-  <div id="splash">
-    <div class="logo">🐕</div>
-    <h1 class="text-2xl font-bold text-amber-800 mt-4">SniffSnax</h1>
-    <p class="text-amber-600 mt-2">Loading...</p>
-  </div>
+<body class="gradient-bg">
   
-  <!-- App Root -->
-  <div id="root"></div>
-  
-  <!-- App Script -->
-  <script type="text/babel" data-type="module">
-    const { useState, useEffect, useMemo } = React;
+  <!-- Navigation -->
+  <nav class="sticky top-0 z-50 bg-gradient-to-b from-amber-100/95 to-amber-100/80 backdrop-blur-md safe-top">
+    <div class="container mx-auto px-4 py-3 md:py-4">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <span class="text-2xl md:text-3xl">🐕</span>
+          <span class="text-lg md:text-xl font-bold text-amber-900">SniffSnax</span>
+        </div>
+        <a href="app.html" class="px-4 py-2 bg-amber-900 text-white rounded-full font-medium text-sm md:text-base hover:bg-amber-800 transition-colors active:scale-95">
+          Open App
+        </a>
+      </div>
+    </div>
+  </nav>
 
-    // Size-based portion multipliers
-    const getPortionBySize = (basePortionText, weightKg) => {
-      if (!weightKg) return basePortionText;
+  <!-- Hero Section -->
+  <section class="container mx-auto px-4 py-8 md:py-16 lg:py-20">
+    <div class="grid md:grid-cols-2 gap-8 md:gap-12 items-center">
       
-      let sizeLabel, multiplier;
-      if (weightKg < 5) {
-        sizeLabel = 'Tiny';
-        multiplier = 0.25;
-      } else if (weightKg < 10) {
-        sizeLabel = 'Small';
-        multiplier = 0.5;
-      } else if (weightKg < 25) {
-        sizeLabel = 'Medium';
-        multiplier = 1;
-      } else if (weightKg < 40) {
-        sizeLabel = 'Large';
-        multiplier = 1.5;
-      } else {
-        sizeLabel = 'Giant';
-        multiplier = 2;
-      }
+      <!-- Text Content -->
+      <div class="text-center md:text-left order-2 md:order-1">
+        <div class="fade-in">
+          <span class="inline-block px-3 py-1 bg-amber-200 text-amber-800 rounded-full text-xs md:text-sm font-medium mb-3 md:mb-4">
+            Free • No Ads • Works Offline
+          </span>
+        </div>
+        
+        <h1 class="fade-in fade-in-delay-1 text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold text-amber-900 leading-tight mb-3 md:mb-4">
+          Can my dog<br>eat this? 🤔
+        </h1>
+        
+        <p class="fade-in fade-in-delay-2 text-base md:text-lg lg:text-xl text-amber-800 mb-6 md:mb-8 max-w-lg mx-auto md:mx-0">
+          Stop googling. Get instant answers.<br>
+          <span class="font-semibold">Safe, Caution, or Toxic</span> — in 2 seconds.
+        </p>
+        
+        <div class="fade-in fade-in-delay-3 flex flex-col sm:flex-row gap-3 md:gap-4 justify-center md:justify-start">
+          <a href="app.html" class="px-6 md:px-8 py-3 md:py-4 bg-amber-900 text-white rounded-2xl font-semibold text-base md:text-lg hover:bg-amber-800 transition-all active:scale-95 shadow-lg">
+            🐕 Open SniffSnax
+          </a>
+          <a href="#install" class="px-6 md:px-8 py-3 md:py-4 bg-white/50 text-amber-900 rounded-2xl font-semibold text-base md:text-lg hover:bg-white/70 transition-all active:scale-95 border-2 border-amber-300">
+            📲 Install App
+          </a>
+        </div>
+        
+        <p class="fade-in fade-in-delay-4 text-xs md:text-sm text-amber-700 mt-4 md:mt-6">
+          ✨ 200+ foods • iPhone, Android & Desktop
+        </p>
+      </div>
       
-      return { sizeLabel, multiplier, basePortionText };
-    };
-
-    // Dog size category helper
-    const getDogSizeCategory = (weightKg) => {
-      if (!weightKg) return null;
-      if (weightKg < 5) return { label: 'Tiny', emoji: '🐕', color: 'text-purple-600', bg: 'bg-purple-100' };
-      if (weightKg < 10) return { label: 'Small', emoji: '🐕', color: 'text-blue-600', bg: 'bg-blue-100' };
-      if (weightKg < 25) return { label: 'Medium', emoji: '🐕', color: 'text-green-600', bg: 'bg-green-100' };
-      if (weightKg < 40) return { label: 'Large', emoji: '🦮', color: 'text-orange-600', bg: 'bg-orange-100' };
-      return { label: 'Giant', emoji: '🦮', color: 'text-red-600', bg: 'bg-red-100' };
-    };
-
-    // Common dog breeds for quick selection
-    const popularBreeds = [
-      'Mixed Breed', 'Labrador Retriever', 'Golden Retriever', 'German Shepherd', 
-      'Bulldog', 'Beagle', 'Poodle', 'Rottweiler', 'Yorkshire Terrier', 
-      'Boxer', 'Dachshund', 'Shih Tzu', 'Siberian Husky', 'Chihuahua',
-      'Pomeranian', 'French Bulldog', 'Corgi', 'Border Collie', 'Australian Shepherd',
-      'Maltese', 'Pug', 'Cocker Spaniel', 'Pit Bull', 'Great Dane', 'Doberman'
-    ];
-
-    // Special considerations options
-    const specialConsiderations = [
-      { id: 'senior', label: 'Senior', emoji: '🧓', description: 'Older dog with different nutritional needs', tip: 'Softer foods and smaller portions recommended' },
-      { id: 'puppy', label: 'Puppy', emoji: '🐶', description: 'Still growing and developing', tip: 'Some foods not suitable until fully grown' },
-      { id: 'pregnant', label: 'Pregnant / Nursing', emoji: '🤱', description: 'Expecting or feeding puppies', tip: 'Higher nutritional needs - consult vet for diet' },
-      { id: 'diabetic', label: 'Diabetic', emoji: '💉', description: 'Requires blood sugar management', tip: 'Avoid sugary foods, maintain consistent feeding schedule' },
-      { id: 'allergies', label: 'Food Allergies', emoji: '🤧', description: 'Sensitive to certain ingredients', tip: 'Introduce new foods slowly and one at a time' },
-      { id: 'sensitive_stomach', label: 'Sensitive Stomach', emoji: '🫄', description: 'Prone to digestive upset', tip: 'Stick to bland, easily digestible foods' },
-      { id: 'weight_management', label: 'Weight Management', emoji: '⚖️', description: 'Needs portion control', tip: 'Choose low-calorie treats, measure portions carefully' },
-      { id: 'kidney', label: 'Kidney Support', emoji: '💧', description: 'Requires kidney-friendly diet', tip: 'Avoid high-phosphorus and high-sodium foods' },
-      { id: 'heart', label: 'Heart Support', emoji: '❤️', description: 'Needs heart-healthy diet', tip: 'Low sodium foods recommended' },
-      { id: 'blind', label: 'Blind / Low Vision', emoji: '👁️', description: 'Limited or no sight', tip: 'Keep food bowl in consistent location' },
-      { id: 'deaf', label: 'Deaf / Hard of Hearing', emoji: '👂', description: 'Limited or no hearing', tip: 'Use visual cues for feeding time' },
-      { id: 'mobility', label: 'Limited Mobility', emoji: '🦮', description: 'Difficulty moving around', tip: 'Elevated food bowls may help with comfort' },
-    ];
-
-    // Get food tips based on considerations
-    const getFoodTipsForConsiderations = (considerations = [], foodStatus) => {
-      const tips = [];
-      
-      if (considerations.includes('senior')) {
-        if (foodStatus === 'safe') tips.push('For senior dogs: Consider softer preparation or smaller pieces');
-        if (foodStatus === 'caution') tips.push('Extra caution for senior dogs - their systems are more sensitive');
-      }
-      
-      if (considerations.includes('puppy')) {
-        if (foodStatus === 'safe') tips.push('For puppies: Introduce new foods gradually');
-        if (foodStatus === 'caution') tips.push('Not recommended for puppies - wait until fully grown');
-      }
-      
-      if (considerations.includes('diabetic')) {
-        tips.push('Check sugar content - diabetic dogs need consistent, low-sugar foods');
-      }
-      
-      if (considerations.includes('sensitive_stomach')) {
-        if (foodStatus === 'caution') tips.push('With a sensitive stomach, best to avoid this food');
-        if (foodStatus === 'safe') tips.push('Introduce slowly to check for digestive tolerance');
-      }
-      
-      if (considerations.includes('weight_management')) {
-        tips.push('Remember to account for treat calories in daily intake');
-      }
-      
-      if (considerations.includes('kidney')) {
-        tips.push('Check phosphorus and protein levels - consult vet for kidney-safe options');
-      }
-      
-      if (considerations.includes('heart')) {
-        tips.push('Avoid high-sodium foods for heart health');
-      }
-      
-      if (considerations.includes('allergies')) {
-        tips.push('If this is a new food, introduce in tiny amounts first');
-      }
-      
-      return tips;
-    };
-
-    // Food database with safety info
-    const foodDatabase = [
-      // ==================== SAFE FOODS ====================
-      // Fruits
-      { name: 'apple', status: 'safe', emoji: '🍎', note: 'Remove seeds and core first. Great source of vitamins A and C.', portion: 'A few slices as a treat' },
-      { name: 'apples', status: 'safe', emoji: '🍎', note: 'Remove seeds and core first. Great source of vitamins A and C.', portion: 'A few slices as a treat' },
-      { name: 'banana', status: 'safe', emoji: '🍌', note: 'High in potassium and vitamins. Low in cholesterol and sodium.', portion: '1-2 small pieces' },
-      { name: 'bananas', status: 'safe', emoji: '🍌', note: 'High in potassium and vitamins. Low in cholesterol and sodium.', portion: '1-2 small pieces' },
-      { name: 'blueberries', status: 'safe', emoji: '🫐', note: 'Superfood! Rich in antioxidants and fiber.', portion: 'A small handful' },
-      { name: 'blueberry', status: 'safe', emoji: '🫐', note: 'Superfood! Rich in antioxidants and fiber.', portion: 'A small handful' },
-      { name: 'watermelon', status: 'safe', emoji: '🍉', note: 'Remove seeds and rind. Hydrating and refreshing treat.', portion: 'A few seedless chunks' },
-      { name: 'strawberry', status: 'safe', emoji: '🍓', note: 'Fresh, no sugar added. Contains fiber and vitamin C.', portion: '1-2 berries' },
-      { name: 'strawberries', status: 'safe', emoji: '🍓', note: 'Fresh, no sugar added. Contains fiber and vitamin C.', portion: '1-2 berries' },
-      { name: 'mango', status: 'safe', emoji: '🥭', note: 'Remove pit and skin. Sweet treat rich in vitamins.', portion: 'A few small pieces' },
-      { name: 'orange', status: 'safe', emoji: '🍊', note: 'Remove peel and seeds. High in vitamin C.', portion: '1-2 segments only' },
-      { name: 'oranges', status: 'safe', emoji: '🍊', note: 'Remove peel and seeds. High in vitamin C.', portion: '1-2 segments only' },
-      { name: 'pear', status: 'safe', emoji: '🍐', note: 'Remove seeds and core. Good source of vitamins.', portion: 'A few slices' },
-      { name: 'pears', status: 'safe', emoji: '🍐', note: 'Remove seeds and core. Good source of vitamins.', portion: 'A few slices' },
-      { name: 'cantaloupe', status: 'safe', emoji: '🍈', note: 'Remove rind and seeds. High in vitamins A and C.', portion: 'A few small chunks' },
-      { name: 'honeydew', status: 'safe', emoji: '🍈', note: 'Remove rind and seeds. Hydrating and low calorie.', portion: 'A few small chunks' },
-      { name: 'cranberries', status: 'safe', emoji: '🔴', note: 'Fresh or dried without added sugar. May help urinary health.', portion: 'Small handful' },
-      { name: 'raspberries', status: 'safe', emoji: '🔴', note: 'Low in sugar, high in fiber. Contains trace xylitol but safe in small amounts.', portion: 'A few berries' },
-      { name: 'blackberries', status: 'safe', emoji: '🫐', note: 'Rich in antioxidants and vitamins. Low in calories.', portion: 'A few berries' },
-      { name: 'papaya', status: 'safe', emoji: '🥭', note: 'Remove seeds and skin. Contains enzymes that aid digestion.', portion: 'A few small pieces' },
-      { name: 'kiwi', status: 'safe', emoji: '🥝', note: 'Remove skin. High in vitamin C and fiber.', portion: 'A few small pieces' },
-      
-      // Vegetables
-      { name: 'carrot', status: 'safe', emoji: '🥕', note: 'Great for teeth! Low calorie and high in fiber and beta-carotene.', portion: 'Baby carrots or sliced' },
-      { name: 'carrots', status: 'safe', emoji: '🥕', note: 'Great for teeth! Low calorie and high in fiber and beta-carotene.', portion: 'Baby carrots or sliced' },
-      { name: 'cucumber', status: 'safe', emoji: '🥒', note: 'Low calorie, hydrating snack. Great for overweight dogs.', portion: 'Sliced rounds' },
-      { name: 'cucumbers', status: 'safe', emoji: '🥒', note: 'Low calorie, hydrating snack. Great for overweight dogs.', portion: 'Sliced rounds' },
-      { name: 'green beans', status: 'safe', emoji: '🫛', note: 'Plain, no seasoning. Low calorie and filling.', portion: 'Chopped as meal mixer' },
-      { name: 'pumpkin', status: 'safe', emoji: '🎃', note: 'Plain canned pumpkin aids digestion. Not pumpkin pie filling!', portion: '1-2 tablespoons' },
-      { name: 'sweet potato', status: 'safe', emoji: '🍠', note: 'Cooked and plain. Great source of dietary fiber.', portion: 'Small cubes as treats' },
-      { name: 'sweet potatoes', status: 'safe', emoji: '🍠', note: 'Cooked and plain. Great source of dietary fiber.', portion: 'Small cubes as treats' },
-      { name: 'spinach', status: 'safe', emoji: '🥬', note: 'Small amounts only due to oxalic acid. Best cooked.', portion: 'Occasional small amounts' },
-      { name: 'celery', status: 'safe', emoji: '🥬', note: 'Freshens breath! Cut into small pieces to prevent choking.', portion: 'Small chopped pieces' },
-      { name: 'broccoli', status: 'safe', emoji: '🥦', note: 'High in fiber and vitamin C. Only in small quantities.', portion: 'Small florets occasionally' },
-      { name: 'cauliflower', status: 'safe', emoji: '🥬', note: 'Safe in small amounts. Can cause gas if too much.', portion: 'Small pieces occasionally' },
-      { name: 'zucchini', status: 'safe', emoji: '🥒', note: 'Low calorie, easy to digest. Great for weight management.', portion: 'Sliced or cubed pieces' },
-      { name: 'lettuce', status: 'safe', emoji: '🥬', note: 'Low calorie, mostly water. Romaine is most nutritious.', portion: 'Shredded as topper' },
-      { name: 'peas', status: 'safe', emoji: '🟢', note: 'Fresh, frozen, or thawed. Good source of vitamins.', portion: 'Small handful' },
-      { name: 'bell pepper', status: 'safe', emoji: '🫑', note: 'Any color is safe. Remove seeds and stem. High in vitamins.', portion: 'A few slices' },
-      { name: 'bell peppers', status: 'safe', emoji: '🫑', note: 'Any color is safe. Remove seeds and stem. High in vitamins.', portion: 'A few slices' },
-      
-      // Proteins
-      { name: 'chicken', status: 'safe', emoji: '🍗', note: 'Cooked, unseasoned, boneless chicken is excellent protein.', portion: 'Shredded, as meal topper' },
-      { name: 'turkey', status: 'safe', emoji: '🦃', note: 'Cooked, unseasoned, no skin or bones. Great lean protein.', portion: 'Shredded pieces' },
-      { name: 'beef', status: 'safe', emoji: '🥩', note: 'Cooked, lean, unseasoned. Good source of protein and iron.', portion: 'Small cooked pieces' },
-      { name: 'salmon', status: 'safe', emoji: '🐟', note: 'Cooked only! Great for coat health. Never raw.', portion: 'Small flaked portions' },
-      { name: 'eggs', status: 'safe', emoji: '🥚', note: 'Cooked eggs are a great protein source. Avoid raw.', portion: '1 egg occasionally' },
-      { name: 'egg', status: 'safe', emoji: '🥚', note: 'Cooked eggs are a great protein source. Avoid raw.', portion: '1 egg occasionally' },
-      
-      // Grains & Others
-      { name: 'rice', status: 'safe', emoji: '🍚', note: 'Plain cooked rice is gentle on stomachs. Good for upset tummies.', portion: 'Mixed with regular food' },
-      { name: 'oatmeal', status: 'safe', emoji: '🥣', note: 'Plain, cooked oatmeal. Good fiber source. No sugar or flavoring.', portion: '1-2 tablespoons' },
-      { name: 'peanut butter', status: 'safe', emoji: '🥜', note: 'Check for xylitol first! Plain, unsalted is best.', portion: '1 tablespoon max' },
-      { name: 'quinoa', status: 'safe', emoji: '🥗', note: 'Cooked and plain. Complete protein source.', portion: 'Small amount as mixer' },
-      { name: 'pasta', status: 'safe', emoji: '🍝', note: 'Plain cooked pasta. No sauce or seasonings. Low nutritional value.', portion: 'Small amount occasionally' },
-      
-      // ==================== CAUTION FOODS ====================
-      { name: 'cheese', status: 'caution', emoji: '🧀', note: 'Some dogs are lactose intolerant. Use sparingly and watch for digestive issues.', portion: 'Small cubes rarely', warning: 'Watch for digestive upset' },
-      { name: 'bread', status: 'caution', emoji: '🍞', note: 'Plain bread in small amounts is okay. No nutritional value. Avoid raw dough!', portion: 'Small pieces occasionally', warning: 'Raw dough is dangerous' },
-      { name: 'tomato', status: 'caution', emoji: '🍅', note: 'Ripe tomatoes only. Green parts and unripe tomatoes contain solanine.', portion: 'Ripe flesh only', warning: 'Avoid stems and leaves' },
-      { name: 'tomatoes', status: 'caution', emoji: '🍅', note: 'Ripe tomatoes only. Green parts and unripe tomatoes contain solanine.', portion: 'Ripe flesh only', warning: 'Avoid stems and leaves' },
-      { name: 'milk', status: 'caution', emoji: '🥛', note: 'Many dogs are lactose intolerant. Can cause digestive upset.', portion: 'Very small amounts', warning: 'May cause diarrhea' },
-      { name: 'popcorn', status: 'caution', emoji: '🍿', note: 'Plain, air-popped only. No butter, salt, or seasonings.', portion: 'A few pieces', warning: 'Kernels can be choking hazard' },
-      { name: 'shrimp', status: 'caution', emoji: '🦐', note: 'Fully cooked and cleaned. Remove shell, tail, and veins.', portion: 'Occasional treat', warning: 'Some dogs have shellfish allergies' },
-      { name: 'pineapple', status: 'caution', emoji: '🍍', note: 'Fresh only, remove skin and core. High in sugar.', portion: 'Small chunks rarely', warning: 'Too much causes upset stomach' },
-      { name: 'coconut', status: 'caution', emoji: '🥥', note: 'Flesh is okay in small amounts. Oil can cause loose stools.', portion: 'Small pieces', warning: 'High in fat' },
-      { name: 'honey', status: 'caution', emoji: '🍯', note: 'Small amounts okay. High in sugar, not for diabetic or overweight dogs.', portion: 'Tiny amounts', warning: 'Not for puppies' },
-      { name: 'cashews', status: 'caution', emoji: '🥜', note: 'Unsalted only. High in fat, can cause pancreatitis if too many.', portion: 'A few nuts rarely', warning: 'High fat content' },
-      { name: 'almonds', status: 'caution', emoji: '🥜', note: 'Not toxic but hard to digest. Can cause choking or blockages.', portion: 'Avoid if possible', warning: 'Choking hazard, hard to digest' },
-      { name: 'yogurt', status: 'caution', emoji: '🥛', note: 'Plain, unsweetened only. Contains probiotics. Check for xylitol!', portion: 'Small spoonful', warning: 'Avoid sweetened varieties' },
-      { name: 'bacon', status: 'caution', emoji: '🥓', note: 'Very high in fat and sodium. Can cause pancreatitis.', portion: 'Tiny piece rarely', warning: 'High fat, risk of pancreatitis' },
-      { name: 'ham', status: 'caution', emoji: '🍖', note: 'High in sodium. Can cause excessive thirst and pancreatitis.', portion: 'Very small pieces', warning: 'High sodium content' },
-      { name: 'corn', status: 'caution', emoji: '🌽', note: 'Kernels are safe. Never give corn on the cob - choking hazard!', portion: 'Kernels off the cob', warning: 'Cob is dangerous' },
-      { name: 'potato', status: 'caution', emoji: '🥔', note: 'Cooked plain only. Raw or green potatoes are toxic.', portion: 'Small cooked pieces', warning: 'Never raw or green' },
-      { name: 'potatoes', status: 'caution', emoji: '🥔', note: 'Cooked plain only. Raw or green potatoes are toxic.', portion: 'Small cooked pieces', warning: 'Never raw or green' },
-      { name: 'hot dog', status: 'caution', emoji: '🌭', note: 'High in sodium and preservatives. Not ideal but not toxic.', portion: 'Small pieces for training', warning: 'High sodium content' },
-      { name: 'ice cream', status: 'caution', emoji: '🍦', note: 'High in sugar and dairy. Many dogs are lactose intolerant.', portion: 'Tiny taste rarely', warning: 'Check for xylitol in sugar-free' },
-      { name: 'french fries', status: 'caution', emoji: '🍟', note: 'High in salt and fat. Plain, unsalted occasionally okay.', portion: 'One or two plain', warning: 'Very unhealthy choice' },
-      { name: 'pizza', status: 'caution', emoji: '🍕', note: 'Crust only if plain. Toppings often unsafe. High in sodium.', portion: 'Small plain crust piece', warning: 'Watch toppings carefully' },
-      
-      // ==================== TOXIC FOODS ====================
-      { name: 'grape', status: 'toxic', emoji: '🍇', note: 'HIGHLY TOXIC! Can cause kidney failure. Even small amounts are dangerous.', danger: 'Kidney failure', action: 'Contact vet immediately if ingested' },
-      { name: 'grapes', status: 'toxic', emoji: '🍇', note: 'HIGHLY TOXIC! Can cause kidney failure. Even small amounts are dangerous.', danger: 'Kidney failure', action: 'Contact vet immediately if ingested' },
-      { name: 'raisin', status: 'toxic', emoji: '🍇', note: 'HIGHLY TOXIC! Even more concentrated than grapes. Extremely dangerous.', danger: 'Kidney failure', action: 'Contact vet immediately if ingested' },
-      { name: 'raisins', status: 'toxic', emoji: '🍇', note: 'HIGHLY TOXIC! Even more concentrated than grapes. Extremely dangerous.', danger: 'Kidney failure', action: 'Contact vet immediately if ingested' },
-      { name: 'chocolate', status: 'toxic', emoji: '🍫', note: 'Contains theobromine. Dark chocolate is most dangerous. Never safe.', danger: 'Heart problems, seizures', action: 'Contact vet - mention type and amount eaten' },
-      { name: 'dark chocolate', status: 'toxic', emoji: '🍫', note: 'EXTREMELY TOXIC! Highest theobromine content. Very dangerous.', danger: 'Seizures, heart failure', action: 'EMERGENCY - Contact vet immediately' },
-      { name: 'onion', status: 'toxic', emoji: '🧅', note: 'Damages red blood cells. All forms toxic: raw, cooked, powder.', danger: 'Anemia, organ damage', action: 'Contact vet if more than tiny amount' },
-      { name: 'onions', status: 'toxic', emoji: '🧅', note: 'Damages red blood cells. All forms toxic: raw, cooked, powder.', danger: 'Anemia, organ damage', action: 'Contact vet if more than tiny amount' },
-      { name: 'garlic', status: 'toxic', emoji: '🧄', note: 'More toxic than onions. Damages red blood cells.', danger: 'Anemia, weakness', action: 'Contact vet - symptoms may be delayed' },
-      { name: 'avocado', status: 'toxic', emoji: '🥑', note: 'Contains persin. Pit is also a choking/blockage hazard.', danger: 'Vomiting, diarrhea', action: 'Monitor closely, call vet if symptoms appear' },
-      { name: 'xylitol', status: 'toxic', emoji: '⚠️', note: 'EXTREMELY TOXIC! Found in sugar-free products. Causes rapid insulin release.', danger: 'Liver failure, death', action: 'EMERGENCY - Contact vet immediately' },
-      { name: 'macadamia', status: 'toxic', emoji: '🥜', note: 'Causes weakness, vomiting, tremors. Toxic mechanism unknown.', danger: 'Weakness, hyperthermia', action: 'Contact vet - usually recoverable' },
-      { name: 'macadamia nuts', status: 'toxic', emoji: '🥜', note: 'Causes weakness, vomiting, tremors. Toxic mechanism unknown.', danger: 'Weakness, hyperthermia', action: 'Contact vet - usually recoverable' },
-      { name: 'alcohol', status: 'toxic', emoji: '🍺', note: 'Even small amounts dangerous. Dogs cannot metabolize alcohol.', danger: 'Vomiting, breathing problems, coma', action: 'Contact vet immediately' },
-      { name: 'beer', status: 'toxic', emoji: '🍺', note: 'Contains alcohol and often hops. Both are toxic to dogs.', danger: 'Alcohol poisoning', action: 'Contact vet immediately' },
-      { name: 'wine', status: 'toxic', emoji: '🍷', note: 'Alcohol is toxic. Grapes in wine make it doubly dangerous.', danger: 'Alcohol + grape toxicity', action: 'Contact vet immediately' },
-      { name: 'coffee', status: 'toxic', emoji: '☕', note: 'Caffeine is toxic. Includes coffee beans and grounds.', danger: 'Hyperactivity, seizures, heart issues', action: 'Contact vet - mention amount consumed' },
-      { name: 'caffeine', status: 'toxic', emoji: '☕', note: 'Found in coffee, tea, energy drinks. Very dangerous.', danger: 'Heart palpitations, seizures', action: 'Contact vet immediately' },
-      { name: 'tea', status: 'toxic', emoji: '🍵', note: 'Contains caffeine. Some herbal teas may also be harmful.', danger: 'Caffeine toxicity', action: 'Contact vet if significant amount' },
-      { name: 'mushroom', status: 'toxic', emoji: '🍄', note: 'Wild mushrooms can be deadly. Store-bought plain ones may be okay.', danger: 'Organ failure, death (wild)', action: 'If wild mushroom, emergency vet visit' },
-      { name: 'mushrooms', status: 'toxic', emoji: '🍄', note: 'Wild mushrooms extremely dangerous. Assume toxic if unknown.', danger: 'Organ failure, death', action: 'EMERGENCY if wild - contact vet' },
-      { name: 'nutmeg', status: 'toxic', emoji: '🫚', note: 'Contains myristicin. Can cause hallucinations and high heart rate.', danger: 'Seizures, disorientation', action: 'Contact vet if significant amount' },
-      { name: 'cherry', status: 'toxic', emoji: '🍒', note: 'Pits, stems, and leaves contain cyanide. Flesh alone in tiny amounts may be okay.', danger: 'Cyanide poisoning', action: 'Contact vet if pit ingested' },
-      { name: 'cherries', status: 'toxic', emoji: '🍒', note: 'Pits, stems, and leaves contain cyanide. Flesh alone in tiny amounts may be okay.', danger: 'Cyanide poisoning', action: 'Contact vet if pit ingested' },
-      { name: 'peach', status: 'toxic', emoji: '🍑', note: 'Pit contains cyanide and is a choking hazard. Flesh is okay without pit.', danger: 'Cyanide, intestinal blockage', action: 'Contact vet if pit swallowed' },
-      { name: 'plum', status: 'toxic', emoji: '🫐', note: 'Pit is toxic and dangerous. Flesh without pit is okay in small amounts.', danger: 'Cyanide, intestinal blockage', action: 'Contact vet if pit swallowed' },
-      { name: 'raw yeast dough', status: 'toxic', emoji: '🍞', note: 'Expands in stomach. Produces alcohol as it rises.', danger: 'Bloat, alcohol poisoning', action: 'EMERGENCY - Contact vet immediately' },
-      { name: 'bread dough', status: 'toxic', emoji: '🍞', note: 'Raw dough expands and produces alcohol. Very dangerous.', danger: 'Stomach expansion, alcohol', action: 'EMERGENCY - Contact vet immediately' },
-      { name: 'cooked bones', status: 'toxic', emoji: '🦴', note: 'Splinter easily. Can puncture digestive tract.', danger: 'Internal punctures, blockage', action: 'EMERGENCY if choking or distress' },
-      { name: 'chicken bones', status: 'toxic', emoji: '🦴', note: 'Cooked bones splinter. Can cause choking or internal injury.', danger: 'Choking, internal punctures', action: 'Monitor closely, vet if symptoms' },
-      { name: 'candy', status: 'toxic', emoji: '🍬', note: 'Often contains xylitol or chocolate. Always check ingredients.', danger: 'Xylitol/chocolate toxicity', action: 'Check ingredients, call vet if xylitol' },
-      { name: 'gum', status: 'toxic', emoji: '🍬', note: 'Most contain xylitol. Extremely dangerous.', danger: 'Xylitol toxicity', action: 'EMERGENCY - Contact vet immediately' },
-      { name: 'chewing gum', status: 'toxic', emoji: '🍬', note: 'Usually contains xylitol. Very toxic to dogs.', danger: 'Liver failure, seizures', action: 'EMERGENCY - Contact vet immediately' },
-    ];
-
-    // Status configuration
-    const statusConfig = {
-      safe: {
-        bg: 'bg-emerald-50',
-        border: 'border-emerald-200',
-        icon: '✓',
-        iconBg: 'bg-emerald-500',
-        title: 'Safe for Dogs',
-        titleColor: 'text-emerald-700',
-        badge: 'bg-emerald-100 text-emerald-700'
-      },
-      caution: {
-        bg: 'bg-amber-50',
-        border: 'border-amber-200',
-        icon: '!',
-        iconBg: 'bg-amber-500',
-        title: 'Use Caution',
-        titleColor: 'text-amber-700',
-        badge: 'bg-amber-100 text-amber-700'
-      },
-      toxic: {
-        bg: 'bg-red-50',
-        border: 'border-red-200',
-        icon: '✕',
-        iconBg: 'bg-red-500',
-        title: 'Toxic - Do Not Feed',
-        titleColor: 'text-red-700',
-        badge: 'bg-red-100 text-red-700'
-      }
-    };
-
-    function App() {
-      const [searchQuery, setSearchQuery] = useState('');
-      const [selectedFood, setSelectedFood] = useState(null);
-      const [recentSearches, setRecentSearches] = useState([]);
-      const [showProfileModal, setShowProfileModal] = useState(false);
-      const [editingDogIndex, setEditingDogIndex] = useState(null);
-      const [dogProfiles, setDogProfiles] = useState(() => {
-        const saved = localStorage.getItem('sniffsnax_dogProfiles');
-        return saved ? JSON.parse(saved) : [];
-      });
-      const [activeDogIndex, setActiveDogIndex] = useState(() => {
-        const saved = localStorage.getItem('sniffsnax_activeDogIndex');
-        return saved ? parseInt(saved) : 0;
-      });
-
-      useEffect(() => {
-        localStorage.setItem('sniffsnax_dogProfiles', JSON.stringify(dogProfiles));
-      }, [dogProfiles]);
-
-      useEffect(() => {
-        localStorage.setItem('sniffsnax_activeDogIndex', activeDogIndex.toString());
-      }, [activeDogIndex]);
-
-      // Hide splash screen
-      useEffect(() => {
-        const splash = document.getElementById('splash');
-        if (splash) {
-          setTimeout(() => splash.classList.add('hidden'), 500);
-        }
-      }, []);
-
-      const activeDog = dogProfiles.length > 0 ? dogProfiles[activeDogIndex] || dogProfiles[0] : null;
-      const sizeCategory = activeDog?.weight ? getDogSizeCategory(activeDog.weight) : null;
-
-      const handleSaveDog = (profile) => {
-        if (editingDogIndex !== null) {
-          setDogProfiles(prev => prev.map((p, i) => i === editingDogIndex ? profile : p));
-        } else {
-          setDogProfiles(prev => [...prev, profile]);
-          setActiveDogIndex(dogProfiles.length);
-        }
-        setShowProfileModal(false);
-        setEditingDogIndex(null);
-      };
-
-      const handleDeleteDog = (index) => {
-        setDogProfiles(prev => prev.filter((_, i) => i !== index));
-        if (activeDogIndex >= dogProfiles.length - 1) {
-          setActiveDogIndex(Math.max(0, dogProfiles.length - 2));
-        }
-        setShowProfileModal(false);
-        setEditingDogIndex(null);
-      };
-
-      const openAddDog = () => {
-        setEditingDogIndex(null);
-        setShowProfileModal(true);
-      };
-
-      const openEditDog = (index) => {
-        setEditingDogIndex(index);
-        setShowProfileModal(true);
-      };
-
-      const searchResults = useMemo(() => {
-        if (!searchQuery.trim()) return [];
-        const query = searchQuery.toLowerCase().trim();
-        return foodDatabase.filter(food => 
-          food.name.toLowerCase().includes(query)
-        ).slice(0, 5);
-      }, [searchQuery]);
-
-      const selectFood = (food) => {
-        setSelectedFood(food);
-        setSearchQuery('');
-        setRecentSearches(prev => {
-          const filtered = prev.filter(f => f.name !== food.name);
-          return [food, ...filtered].slice(0, 5);
-        });
-      };
-
-      const clearSelection = () => {
-        setSelectedFood(null);
-      };
-
-      return (
-        <div className="min-h-screen bg-slate-50">
-          {/* Header */}
-          <header className="bg-white border-b border-slate-200 sticky top-0 z-10">
-            <div className="max-w-lg mx-auto px-4 py-4">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <span className="text-3xl">🐕</span>
-                  <div>
-                    <h1 className="text-xl font-bold text-slate-800">SniffSnax</h1>
-                    <p className="text-sm text-slate-500">
-                      {activeDog ? `Checking for ${activeDog.name}` : 'Can my dog eat this?'}
-                    </p>
+      <!-- Phone Mockup -->
+      <div class="flex justify-center order-1 md:order-2 fade-in fade-in-delay-2">
+        <div class="phone-mockup floating w-[200px] sm:w-[220px] md:w-[240px] lg:w-[260px]">
+          <div class="phone-screen bg-slate-50" style="aspect-ratio: 9/19.5;">
+            <div class="pt-11 sm:pt-12 pb-3 sm:pb-4 px-3 sm:px-4 text-center h-full flex flex-col">
+              <div class="text-3xl sm:text-4xl mb-1 sm:mb-2">🐕</div>
+              <div class="text-xs sm:text-sm font-bold text-slate-800">SniffSnax</div>
+              <div class="text-slate-400 text-[10px] sm:text-xs mt-0.5 sm:mt-1">Type any food...</div>
+              
+              <div class="mt-2 sm:mt-3 flex-1 space-y-1.5 sm:space-y-2">
+                <div class="p-2 sm:p-2.5 bg-emerald-50 border border-emerald-200 rounded-lg sm:rounded-xl text-left">
+                  <div class="flex items-center gap-1.5 sm:gap-2">
+                    <span class="text-base sm:text-lg">🍎</span>
+                    <div>
+                      <div class="font-bold text-emerald-700 text-[10px] sm:text-xs">Apple</div>
+                      <div class="text-[8px] sm:text-[10px] text-emerald-600">✓ Safe for dogs</div>
+                    </div>
                   </div>
                 </div>
                 
-                <button
-                  onClick={openAddDog}
-                  className="p-2 rounded-full bg-slate-100 text-slate-500 hover:bg-slate-200 transition-colors"
-                  title="Add another dog"
-                >
-                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                  </svg>
-                </button>
-              </div>
-              
-              {dogProfiles.length > 0 && (
-                <div className="mt-3 flex items-center gap-2 overflow-x-auto pb-1 -mx-4 px-4 scrollbar-hide">
-                  {dogProfiles.map((dog, index) => {
-                    const isActive = index === activeDogIndex;
-                    const dogSize = getDogSizeCategory(dog.weight);
-                    return (
-                      <button
-                        key={index}
-                        onClick={() => setActiveDogIndex(index)}
-                        className={`flex-shrink-0 flex items-center gap-2 px-3 py-2 rounded-full transition-all ${
-                          isActive 
-                            ? 'bg-blue-500 text-white shadow-md' 
-                            : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
-                        }`}
-                      >
-                        <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${
-                          isActive ? 'bg-white/20' : 'bg-white'
-                        }`}>
-                          {dog.name.charAt(0).toUpperCase()}
-                        </div>
-                        <span className="text-sm font-medium">{dog.name}</span>
-                        {isActive && dogSize && (
-                          <span className="text-xs bg-white/20 px-1.5 py-0.5 rounded">
-                            {dog.weight}kg
-                          </span>
-                        )}
-                      </button>
-                    );
-                  })}
-                  
-                  {dogProfiles.length > 0 && dogProfiles.length < 5 && (
-                    <button
-                      onClick={openAddDog}
-                      className="flex-shrink-0 w-8 h-8 rounded-full bg-slate-100 text-slate-400 hover:bg-slate-200 hover:text-slate-600 flex items-center justify-center transition-colors"
-                      title="Add another dog"
-                    >
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                      </svg>
-                    </button>
-                  )}
-                </div>
-              )}
-              
-              {activeDog && sizeCategory && (
-                <button 
-                  onClick={() => openEditDog(activeDogIndex)}
-                  className="mt-2 flex flex-wrap items-center gap-2 hover:opacity-70 transition-opacity"
-                >
-                  <span className={`px-2 py-1 rounded-full text-xs font-medium ${sizeCategory.bg} ${sizeCategory.color}`}>
-                    {sizeCategory.emoji} {sizeCategory.label} • {activeDog.weight}kg
-                  </span>
-                  {activeDog.breed && (
-                    <span className="px-2 py-1 rounded-full text-xs font-medium bg-slate-100 text-slate-600">
-                      {activeDog.breed}
-                    </span>
-                  )}
-                  {activeDog.considerations?.slice(0, 2).map(id => {
-                    const item = specialConsiderations.find(c => c.id === id);
-                    return item ? (
-                      <span key={id} className="px-2 py-1 rounded-full text-xs font-medium bg-blue-50 text-blue-600">
-                        {item.emoji} {item.label}
-                      </span>
-                    ) : null;
-                  })}
-                  <svg className="w-3 h-3 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
-                  </svg>
-                </button>
-              )}
-            </div>
-          </header>
-
-          {showProfileModal && (
-            <DogProfileModal
-              profile={editingDogIndex !== null ? dogProfiles[editingDogIndex] : null}
-              onSave={handleSaveDog}
-              onDelete={editingDogIndex !== null ? () => handleDeleteDog(editingDogIndex) : null}
-              onClose={() => {
-                setShowProfileModal(false);
-                setEditingDogIndex(null);
-              }}
-              isEditing={editingDogIndex !== null}
-              dogCount={dogProfiles.length}
-            />
-          )}
-
-          <main className="max-w-lg mx-auto px-4 py-6">
-            {/* Search */}
-            <div className="relative mb-6">
-              <div className="relative">
-                <input
-                  type="text"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="Search any food..."
-                  className="w-full px-4 py-4 pl-12 text-lg rounded-2xl border-2 border-slate-200 focus:border-blue-400 focus:outline-none transition-colors bg-white shadow-sm"
-                />
-                <svg className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                </svg>
-                {searchQuery && (
-                  <button 
-                    onClick={() => setSearchQuery('')}
-                    className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
-                  >
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                  </button>
-                )}
-              </div>
-
-              {searchResults.length > 0 && (
-                <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-xl shadow-lg border border-slate-200 overflow-hidden z-20">
-                  {searchResults.map((food, index) => {
-                    const config = statusConfig[food.status];
-                    return (
-                      <button
-                        key={index}
-                        onClick={() => selectFood(food)}
-                        className="w-full px-4 py-3 flex items-center gap-3 hover:bg-slate-50 transition-colors border-b border-slate-100 last:border-0"
-                      >
-                        <span className="text-2xl">{food.emoji}</span>
-                        <span className="flex-1 text-left font-medium text-slate-700 capitalize">{food.name}</span>
-                        <span className={`px-2 py-1 rounded-full text-xs font-medium ${config.badge}`}>
-                          {food.status}
-                        </span>
-                      </button>
-                    );
-                  })}
-                </div>
-              )}
-
-              {searchQuery && searchResults.length === 0 && (
-                <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-xl shadow-lg border border-slate-200 p-4 text-center">
-                  <p className="text-slate-500">No results for "{searchQuery}"</p>
-                  <p className="text-sm text-slate-400 mt-1">Try a different search</p>
-                </div>
-              )}
-            </div>
-
-            {/* Selected Food */}
-            {selectedFood && (
-              <div className="mb-6">
-                <FoodResult food={selectedFood} onClose={clearSelection} dogProfile={activeDog} />
-              </div>
-            )}
-
-            {/* Recent */}
-            {!selectedFood && recentSearches.length > 0 && (
-              <div className="mb-6">
-                <h2 className="text-sm font-medium text-slate-500 mb-3">Recent Searches</h2>
-                <div className="flex flex-wrap gap-2">
-                  {recentSearches.map((food, index) => {
-                    const config = statusConfig[food.status];
-                    return (
-                      <button
-                        key={index}
-                        onClick={() => selectFood(food)}
-                        className={`px-3 py-2 rounded-full flex items-center gap-2 ${config.bg} ${config.border} border transition-transform hover:scale-105`}
-                      >
-                        <span>{food.emoji}</span>
-                        <span className="capitalize text-sm font-medium text-slate-700">{food.name}</span>
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-            )}
-
-            {/* Add Dog Prompt */}
-            {!selectedFood && dogProfiles.length === 0 && (
-              <div className="mb-6">
-                <button
-                  onClick={openAddDog}
-                  className="w-full bg-gradient-to-r from-amber-50 to-orange-50 border-2 border-dashed border-amber-200 rounded-2xl p-4 flex items-center gap-4 hover:border-amber-300 transition-colors"
-                >
-                  <div className="w-12 h-12 rounded-full bg-amber-100 flex items-center justify-center text-2xl">
-                    🐕
+                <div class="p-2 sm:p-2.5 bg-red-50 border border-red-200 rounded-lg sm:rounded-xl text-left">
+                  <div class="flex items-center gap-1.5 sm:gap-2">
+                    <span class="text-base sm:text-lg">🍇</span>
+                    <div>
+                      <div class="font-bold text-red-700 text-[10px] sm:text-xs">Grape</div>
+                      <div class="text-[8px] sm:text-[10px] text-red-600">✕ Toxic - Never feed</div>
+                    </div>
                   </div>
-                  <div className="flex-1 text-left">
-                    <h3 className="font-semibold text-slate-800">Add your dog's profile</h3>
-                    <p className="text-sm text-slate-500">Get personalized portion sizes</p>
-                  </div>
-                  <svg className="w-5 h-5 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                  </svg>
-                </button>
-              </div>
-            )}
-
-            {/* Quick Reference */}
-            {!selectedFood && (
-              <div className="space-y-4">
-                <h2 className="text-sm font-medium text-slate-500">Quick Reference</h2>
+                </div>
                 
-                <div className="bg-white rounded-2xl p-4 border border-slate-200">
-                  <div className="flex items-center gap-2 mb-3">
-                    <span className="w-6 h-6 rounded-full bg-emerald-500 flex items-center justify-center text-white text-sm font-bold">✓</span>
-                    <h3 className="font-semibold text-slate-700">Safe Foods</h3>
-                  </div>
-                  <div className="flex flex-wrap gap-2">
-                    {foodDatabase.filter(f => f.status === 'safe').slice(0, 8).map((food, i) => (
-                      <button 
-                        key={i}
-                        onClick={() => selectFood(food)}
-                        className="px-3 py-1.5 bg-emerald-50 rounded-full text-sm text-emerald-700 hover:bg-emerald-100 transition-colors"
-                      >
-                        {food.emoji} {food.name}
-                      </button>
-                    ))}
+                <div class="p-2 sm:p-2.5 bg-amber-50 border border-amber-200 rounded-lg sm:rounded-xl text-left">
+                  <div class="flex items-center gap-1.5 sm:gap-2">
+                    <span class="text-base sm:text-lg">🧀</span>
+                    <div>
+                      <div class="font-bold text-amber-700 text-[10px] sm:text-xs">Cheese</div>
+                      <div class="text-[8px] sm:text-[10px] text-amber-600">⚠ Use caution</div>
+                    </div>
                   </div>
                 </div>
-
-                <div className="bg-white rounded-2xl p-4 border border-slate-200">
-                  <div className="flex items-center gap-2 mb-3">
-                    <span className="w-6 h-6 rounded-full bg-red-500 flex items-center justify-center text-white text-sm font-bold">✕</span>
-                    <h3 className="font-semibold text-slate-700">Never Feed</h3>
-                  </div>
-                  <div className="flex flex-wrap gap-2">
-                    {foodDatabase.filter(f => f.status === 'toxic').slice(0, 8).map((food, i) => (
-                      <button 
-                        key={i}
-                        onClick={() => selectFood(food)}
-                        className="px-3 py-1.5 bg-red-50 rounded-full text-sm text-red-700 hover:bg-red-100 transition-colors"
-                      >
-                        {food.emoji} {food.name}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {/* Emergency */}
-            <div className="mt-6 bg-gradient-to-r from-blue-500 to-blue-600 rounded-2xl p-4 text-white">
-              <div className="flex items-start gap-3">
-                <span className="text-2xl">🚨</span>
-                <div>
-                  <h3 className="font-semibold">Emergency?</h3>
-                  <p className="text-sm text-blue-100 mt-1">If your dog ate something toxic, contact your vet immediately.</p>
-                  <a href="tel:" className="mt-3 inline-block bg-white text-blue-600 px-4 py-2 rounded-full text-sm font-semibold hover:bg-blue-50 transition-colors">
-                    Find Emergency Vet
-                  </a>
-                </div>
-              </div>
-            </div>
-          </main>
-
-          <footer className="max-w-lg mx-auto px-4 py-6 text-center safe-area-inset-bottom">
-            <p className="text-sm text-slate-500 mb-3">Made with ❤️ for dog lovers everywhere.</p>
-            <a 
-              href="https://buymeacoffee.com/hannahmilan" 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 px-4 py-2 bg-amber-400 hover:bg-amber-500 text-amber-900 font-medium rounded-full text-sm transition-colors"
-            >
-              ☕ Buy me a coffee
-            </a>
-            <p className="text-xs text-slate-400 mt-4">Always consult your vet for specific dietary advice.</p>
-            <p className="text-xs text-slate-300 mt-1">SniffSnax v1.0</p>
-          </footer>
-
-          <style>{`
-            @keyframes fadeIn {
-              from { opacity: 0; transform: translateY(-10px); }
-              to { opacity: 1; transform: translateY(0); }
-            }
-            .animate-fadeIn { animation: fadeIn 0.3s ease-out; }
-            .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
-            .scrollbar-hide::-webkit-scrollbar { display: none; }
-          `}</style>
-        </div>
-      );
-    }
-
-    // Food Result Component
-    function FoodResult({ food, onClose, dogProfile }) {
-      const config = statusConfig[food.status];
-      const portionInfo = dogProfile?.weight ? getPortionBySize(food.portion, dogProfile.weight) : null;
-      const considerationTips = dogProfile?.considerations 
-        ? getFoodTipsForConsiderations(dogProfile.considerations, food.status)
-        : [];
-      
-      return (
-        <div className={`rounded-2xl border-2 ${config.border} ${config.bg} overflow-hidden animate-fadeIn`}>
-          <div className="p-4 flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <span className="text-4xl">{food.emoji}</span>
-              <div>
-                <h2 className="text-xl font-bold text-slate-800 capitalize">{food.name}</h2>
-                <div className="flex items-center gap-2 mt-1">
-                  <span className={`w-5 h-5 rounded-full ${config.iconBg} flex items-center justify-center text-white text-xs font-bold`}>
-                    {config.icon}
-                  </span>
-                  <span className={`font-semibold ${config.titleColor}`}>{config.title}</span>
-                </div>
-              </div>
-            </div>
-            <button onClick={onClose} className="p-2 hover:bg-white/50 rounded-full transition-colors">
-              <svg className="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            </button>
-          </div>
-
-          <div className="px-4 pb-4 space-y-3">
-            <div className="bg-white/60 rounded-xl p-3">
-              <p className="text-slate-600">{food.note}</p>
-            </div>
-
-            {considerationTips.length > 0 && (
-              <div className="bg-blue-100 rounded-xl p-3">
-                <p className="text-xs text-blue-600 uppercase tracking-wide mb-2 font-medium">
-                  💡 For {dogProfile.name}
-                </p>
-                <ul className="space-y-1">
-                  {considerationTips.map((tip, index) => (
-                    <li key={index} className="text-sm text-blue-800 flex items-start gap-2">
-                      <span className="text-blue-400">•</span>
-                      <span>{tip}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
-
-            {food.status === 'safe' && food.portion && (
-              <div className="bg-white/60 rounded-xl p-3">
-                <p className="text-xs text-slate-500 uppercase tracking-wide mb-1">
-                  {dogProfile ? `Portion for ${dogProfile.name}` : 'Recommended Portion'}
-                </p>
-                <p className="text-slate-700 font-medium">{food.portion}</p>
-              </div>
-            )}
-
-            {food.status === 'caution' && food.warning && (
-              <div className="bg-amber-100 rounded-xl p-3 flex items-start gap-2">
-                <span className="text-amber-600">⚠️</span>
-                <p className="text-amber-800 font-medium">{food.warning}</p>
-              </div>
-            )}
-
-            {food.status === 'toxic' && (
-              <>
-                {food.danger && (
-                  <div className="bg-red-100 rounded-xl p-3">
-                    <p className="text-xs text-red-500 uppercase tracking-wide mb-1">Potential Danger</p>
-                    <p className="text-red-700 font-semibold">{food.danger}</p>
-                  </div>
-                )}
-                {food.action && (
-                  <div className="bg-white rounded-xl p-3 border-2 border-red-300">
-                    <p className="text-xs text-slate-500 uppercase tracking-wide mb-1">What To Do</p>
-                    <p className="text-slate-800 font-semibold">{food.action}</p>
-                    {dogProfile && (
-                      <p className="text-xs text-red-600 mt-2">
-                        💡 Tell the vet that {dogProfile.name} weighs {dogProfile.weight}kg
-                      </p>
-                    )}
-                  </div>
-                )}
-              </>
-            )}
-          </div>
-        </div>
-      );
-    }
-
-    // Dog Profile Modal
-    function DogProfileModal({ profile, onSave, onDelete, onClose, isEditing, dogCount }) {
-      const [name, setName] = useState(profile?.name || '');
-      const [weight, setWeight] = useState(profile?.weight || '');
-      const [breed, setBreed] = useState(profile?.breed || '');
-      const [considerations, setConsiderations] = useState(profile?.considerations || []);
-      const [showBreedList, setShowBreedList] = useState(false);
-
-      const handleSave = () => {
-        if (!name.trim() || !weight) return;
-        onSave({ name: name.trim(), weight: parseFloat(weight), breed: breed.trim(), considerations });
-      };
-
-      const toggleConsideration = (id) => {
-        setConsiderations(prev => prev.includes(id) ? prev.filter(c => c !== id) : [...prev, id]);
-      };
-
-      const sizePreview = weight ? getDogSizeCategory(parseFloat(weight)) : null;
-
-      return (
-        <div className="fixed inset-0 z-50 overflow-y-auto bg-black/50 backdrop-blur-sm">
-          <div className="min-h-full flex items-end sm:items-center justify-center p-0 sm:p-4">
-            <div className="relative bg-white w-full max-w-lg rounded-t-3xl sm:rounded-3xl shadow-xl">
-              <div className="sm:hidden flex justify-center pt-3">
-                <div className="w-10 h-1 bg-slate-300 rounded-full" />
               </div>
               
-              <div className="px-4 pt-2 pb-3">
-                <div className="flex items-center justify-between">
-                  <h2 className="text-xl font-bold text-slate-800">
-                    {isEditing ? `Edit ${profile?.name}` : 'Add a Dog'}
-                  </h2>
-                  <button onClick={onClose} className="p-2 hover:bg-slate-100 rounded-full transition-colors">
-                    <svg className="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                  </button>
-                </div>
-              </div>
-
-              <div className="px-4 pb-4 space-y-4 max-h-[70vh] overflow-y-auto">
-                <div className="flex justify-center">
-                  <div className="w-20 h-20 rounded-full bg-gradient-to-br from-amber-100 to-orange-100 flex items-center justify-center border-4 border-white shadow-lg">
-                    {name ? (
-                      <span className="text-2xl font-bold text-amber-600">{name.charAt(0).toUpperCase()}</span>
-                    ) : (
-                      <span className="text-3xl">🐕</span>
-                    )}
-                  </div>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1">Dog's Name *</label>
-                  <input
-                    type="text"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    placeholder="e.g., Max, Bella"
-                    autoFocus
-                    className="w-full px-4 py-3 rounded-xl border-2 border-slate-200 focus:border-blue-400 focus:outline-none text-base"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1">Weight (kg) *</label>
-                  <div className="relative">
-                    <input
-                      type="number"
-                      value={weight}
-                      onChange={(e) => setWeight(e.target.value)}
-                      placeholder="e.g., 15"
-                      min="0.5"
-                      max="100"
-                      step="0.5"
-                      className="w-full px-4 py-3 rounded-xl border-2 border-slate-200 focus:border-blue-400 focus:outline-none text-base"
-                    />
-                    <span className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400">kg</span>
-                  </div>
-                  {sizePreview && (
-                    <div className={`mt-2 px-3 py-2 rounded-lg ${sizePreview.bg} flex items-center gap-2`}>
-                      <span>{sizePreview.emoji}</span>
-                      <span className={`text-sm font-medium ${sizePreview.color}`}>{sizePreview.label} sized dog</span>
-                    </div>
-                  )}
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1">Breed <span className="text-slate-400">(optional)</span></label>
-                  <input
-                    type="text"
-                    value={breed}
-                    onChange={(e) => setBreed(e.target.value)}
-                    onFocus={() => setShowBreedList(true)}
-                    onBlur={() => setTimeout(() => setShowBreedList(false), 200)}
-                    placeholder="e.g., Golden Retriever"
-                    className="w-full px-4 py-3 rounded-xl border-2 border-slate-200 focus:border-blue-400 focus:outline-none text-base"
-                  />
-                  {showBreedList && (
-                    <div className="mt-2 flex flex-wrap gap-2">
-                      {popularBreeds.filter(b => !breed || b.toLowerCase().includes(breed.toLowerCase())).slice(0, 6).map((b, i) => (
-                        <button key={i} onMouseDown={() => setBreed(b)} className="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 rounded-full text-sm text-slate-700">
-                          {b}
-                        </button>
-                      ))}
-                    </div>
-                  )}
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1">Things to know <span className="text-slate-400">(optional)</span></label>
-                  <div className="grid grid-cols-2 gap-2">
-                    {specialConsiderations.map((item) => {
-                      const isSelected = considerations.includes(item.id);
-                      return (
-                        <button
-                          key={item.id}
-                          type="button"
-                          onClick={() => toggleConsideration(item.id)}
-                          className={`p-2.5 rounded-xl border-2 text-left transition-all ${isSelected ? 'border-blue-400 bg-blue-50' : 'border-slate-200 hover:border-slate-300 bg-white'}`}
-                        >
-                          <div className="flex items-center gap-2">
-                            <span className="text-base">{item.emoji}</span>
-                            <span className={`text-xs font-medium ${isSelected ? 'text-blue-700' : 'text-slate-700'}`}>{item.label}</span>
-                          </div>
-                        </button>
-                      );
-                    })}
-                  </div>
-                </div>
-
-                <div className="pt-2 space-y-2">
-                  <button
-                    onClick={handleSave}
-                    disabled={!name.trim() || !weight}
-                    className="w-full py-3 bg-blue-500 text-white font-semibold rounded-xl hover:bg-blue-600 transition-colors disabled:bg-slate-300 disabled:cursor-not-allowed"
-                  >
-                    {isEditing ? 'Save Changes' : 'Add Dog'}
-                  </button>
-                  
-                  {isEditing && onDelete && (
-                    <button onClick={onDelete} className="w-full py-3 text-red-500 font-medium rounded-xl hover:bg-red-50 transition-colors">
-                      Remove {profile?.name}
-                    </button>
-                  )}
-                </div>
+              <div class="mt-auto pt-2 sm:pt-3">
+                <div class="w-16 sm:w-20 md:w-24 h-1 bg-slate-300 rounded-full mx-auto"></div>
               </div>
             </div>
           </div>
         </div>
-      );
-    }
+      </div>
+    </div>
+  </section>
 
-    // Render app
-    const root = ReactDOM.createRoot(document.getElementById('root'));
-    root.render(<App />);
-  </script>
+  <!-- Features Section -->
+  <section class="container mx-auto px-4 py-12 md:py-16">
+    <h2 class="text-2xl sm:text-3xl md:text-4xl font-bold text-amber-900 text-center mb-8 md:mb-12">
+      Why SniffSnax? 🐾
+    </h2>
+    
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 max-w-5xl mx-auto">
+      
+      <div class="bg-white/60 backdrop-blur rounded-2xl md:rounded-3xl p-5 md:p-6 hover:bg-white/80 transition-all active:scale-[0.98]">
+        <div class="text-3xl md:text-4xl mb-3 md:mb-4">⚡</div>
+        <h3 class="text-lg md:text-xl font-bold text-amber-900 mb-1 md:mb-2">2-Second Answers</h3>
+        <p class="text-sm md:text-base text-amber-800">No essays. No scrolling. Just type and know instantly.</p>
+      </div>
+      
+      <div class="bg-white/60 backdrop-blur rounded-2xl md:rounded-3xl p-5 md:p-6 hover:bg-white/80 transition-all active:scale-[0.98]">
+        <div class="text-3xl md:text-4xl mb-3 md:mb-4">🐕</div>
+        <h3 class="text-lg md:text-xl font-bold text-amber-900 mb-1 md:mb-2">Personalized Portions</h3>
+        <p class="text-sm md:text-base text-amber-800">Add your dog's weight. Chihuahua ≠ Great Dane.</p>
+      </div>
+      
+      <div class="bg-white/60 backdrop-blur rounded-2xl md:rounded-3xl p-5 md:p-6 hover:bg-white/80 transition-all active:scale-[0.98]">
+        <div class="text-3xl md:text-4xl mb-3 md:mb-4">📴</div>
+        <h3 class="text-lg md:text-xl font-bold text-amber-900 mb-1 md:mb-2">Works Offline</h3>
+        <p class="text-sm md:text-base text-amber-800">No wifi? No problem. Works without internet.</p>
+      </div>
+      
+      <div class="bg-white/60 backdrop-blur rounded-2xl md:rounded-3xl p-5 md:p-6 hover:bg-white/80 transition-all active:scale-[0.98]">
+        <div class="text-3xl md:text-4xl mb-3 md:mb-4">🔒</div>
+        <h3 class="text-lg md:text-xl font-bold text-amber-900 mb-1 md:mb-2">100% Private</h3>
+        <p class="text-sm md:text-base text-amber-800">No account. No tracking. No ads. Your data stays local.</p>
+      </div>
+      
+      <div class="bg-white/60 backdrop-blur rounded-2xl md:rounded-3xl p-5 md:p-6 hover:bg-white/80 transition-all active:scale-[0.98]">
+        <div class="text-3xl md:text-4xl mb-3 md:mb-4">💡</div>
+        <h3 class="text-lg md:text-xl font-bold text-amber-900 mb-1 md:mb-2">Smart Tips</h3>
+        <p class="text-sm md:text-base text-amber-800">Senior? Diabetic? Allergies? Get customized tips.</p>
+      </div>
+      
+      <div class="bg-white/60 backdrop-blur rounded-2xl md:rounded-3xl p-5 md:p-6 hover:bg-white/80 transition-all active:scale-[0.98]">
+        <div class="text-3xl md:text-4xl mb-3 md:mb-4">👨‍👩‍👧‍👦</div>
+        <h3 class="text-lg md:text-xl font-bold text-amber-900 mb-1 md:mb-2">Multiple Dogs</h3>
+        <p class="text-sm md:text-base text-amber-800">Got a pack? Add up to 5 dog profiles.</p>
+      </div>
+      
+    </div>
+  </section>
 
-  <!-- Service Worker Registration -->
-  <script>
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('service-worker.js')
-          .then(reg => console.log('SW registered'))
-          .catch(err => console.log('SW registration failed:', err));
-      });
-    }
-  </script>
+  <!-- How It Works -->
+  <section class="container mx-auto px-4 py-12 md:py-16">
+    <h2 class="text-2xl sm:text-3xl md:text-4xl font-bold text-amber-900 text-center mb-8 md:mb-12">
+      How It Works
+    </h2>
+    
+    <div class="flex flex-col md:flex-row items-center justify-center gap-4 md:gap-8 max-w-4xl mx-auto">
+      
+      <div class="flex md:flex-col items-center gap-4 md:gap-0 w-full md:w-auto">
+        <div class="w-14 h-14 md:w-16 md:h-16 bg-amber-200 rounded-2xl flex items-center justify-center text-xl md:text-2xl font-bold text-amber-900 flex-shrink-0">1</div>
+        <div class="md:text-center md:mt-4">
+          <h3 class="font-bold text-amber-900 text-base md:text-lg">Type Food</h3>
+          <p class="text-amber-700 text-sm">Search any food</p>
+        </div>
+      </div>
+      
+      <div class="text-2xl md:text-3xl text-amber-300 rotate-90 md:rotate-0">→</div>
+      
+      <div class="flex md:flex-col items-center gap-4 md:gap-0 w-full md:w-auto">
+        <div class="w-14 h-14 md:w-16 md:h-16 bg-amber-200 rounded-2xl flex items-center justify-center text-xl md:text-2xl font-bold text-amber-900 flex-shrink-0">2</div>
+        <div class="md:text-center md:mt-4">
+          <h3 class="font-bold text-amber-900 text-base md:text-lg">Get Answer</h3>
+          <p class="text-amber-700 text-sm">Safe, Caution, or Toxic</p>
+        </div>
+      </div>
+      
+      <div class="text-2xl md:text-3xl text-amber-300 rotate-90 md:rotate-0">→</div>
+      
+      <div class="flex md:flex-col items-center gap-4 md:gap-0 w-full md:w-auto">
+        <div class="w-14 h-14 md:w-16 md:h-16 bg-amber-200 rounded-2xl flex items-center justify-center text-xl md:text-2xl font-bold text-amber-900 flex-shrink-0">3</div>
+        <div class="md:text-center md:mt-4">
+          <h3 class="font-bold text-amber-900 text-base md:text-lg">Feed Safely</h3>
+          <p class="text-amber-700 text-sm">With portion sizes</p>
+        </div>
+      </div>
+      
+    </div>
+  </section>
+
+  <!-- Install Section -->
+  <section id="install" class="container mx-auto px-4 py-12 md:py-16">
+    <div class="bg-white/70 backdrop-blur rounded-2xl md:rounded-3xl p-5 sm:p-6 md:p-8 lg:p-12 max-w-4xl mx-auto">
+      <h2 class="text-2xl sm:text-3xl md:text-4xl font-bold text-amber-900 text-center mb-2 md:mb-4">
+        📲 Install on Your Phone
+      </h2>
+      <p class="text-sm md:text-base text-amber-700 text-center mb-6 md:mb-10 max-w-lg mx-auto">
+        Add SniffSnax to your home screen for instant access — just like a real app!
+      </p>
+      
+      <div class="grid md:grid-cols-2 gap-4 md:gap-8">
+        
+        <!-- iOS Instructions -->
+        <div class="bg-slate-50 rounded-xl md:rounded-2xl p-4 md:p-6">
+          <div class="flex items-center gap-2 md:gap-3 mb-3 md:mb-4">
+            <span class="text-2xl md:text-3xl">🍎</span>
+            <h3 class="text-lg md:text-xl font-bold text-slate-800">iPhone / iPad</h3>
+          </div>
+          <ol class="space-y-2 md:space-y-3 text-slate-600 text-sm md:text-base">
+            <li class="flex items-start gap-2 md:gap-3">
+              <span class="w-5 h-5 md:w-6 md:h-6 bg-blue-500 text-white rounded-full flex items-center justify-center text-xs md:text-sm font-bold flex-shrink-0 mt-0.5">1</span>
+              <span>Open <a href="app.html" class="text-blue-500 font-medium underline">SniffSnax</a> in <strong>Safari</strong></span>
+            </li>
+            <li class="flex items-start gap-2 md:gap-3">
+              <span class="w-5 h-5 md:w-6 md:h-6 bg-blue-500 text-white rounded-full flex items-center justify-center text-xs md:text-sm font-bold flex-shrink-0 mt-0.5">2</span>
+              <span>Tap the <strong>Share</strong> button <span class="inline-block bg-slate-200 px-1.5 py-0.5 rounded text-xs">⬆️</span></span>
+            </li>
+            <li class="flex items-start gap-2 md:gap-3">
+              <span class="w-5 h-5 md:w-6 md:h-6 bg-blue-500 text-white rounded-full flex items-center justify-center text-xs md:text-sm font-bold flex-shrink-0 mt-0.5">3</span>
+              <span>Tap <strong>"Add to Home Screen"</strong></span>
+            </li>
+            <li class="flex items-start gap-2 md:gap-3">
+              <span class="w-5 h-5 md:w-6 md:h-6 bg-blue-500 text-white rounded-full flex items-center justify-center text-xs md:text-sm font-bold flex-shrink-0 mt-0.5">4</span>
+              <span>Tap <strong>"Add"</strong> — done! 🎉</span>
+            </li>
+          </ol>
+        </div>
+        
+        <!-- Android Instructions -->
+        <div class="bg-slate-50 rounded-xl md:rounded-2xl p-4 md:p-6">
+          <div class="flex items-center gap-2 md:gap-3 mb-3 md:mb-4">
+            <span class="text-2xl md:text-3xl">🤖</span>
+            <h3 class="text-lg md:text-xl font-bold text-slate-800">Android</h3>
+          </div>
+          <ol class="space-y-2 md:space-y-3 text-slate-600 text-sm md:text-base">
+            <li class="flex items-start gap-2 md:gap-3">
+              <span class="w-5 h-5 md:w-6 md:h-6 bg-green-500 text-white rounded-full flex items-center justify-center text-xs md:text-sm font-bold flex-shrink-0 mt-0.5">1</span>
+              <span>Open <a href="app.html" class="text-green-600 font-medium underline">SniffSnax</a> in <strong>Chrome</strong></span>
+            </li>
+            <li class="flex items-start gap-2 md:gap-3">
+              <span class="w-5 h-5 md:w-6 md:h-6 bg-green-500 text-white rounded-full flex items-center justify-center text-xs md:text-sm font-bold flex-shrink-0 mt-0.5">2</span>
+              <span>Tap the <strong>menu</strong> <span class="inline-block bg-slate-200 px-1.5 py-0.5 rounded text-xs">⋮</span></span>
+            </li>
+            <li class="flex items-start gap-2 md:gap-3">
+              <span class="w-5 h-5 md:w-6 md:h-6 bg-green-500 text-white rounded-full flex items-center justify-center text-xs md:text-sm font-bold flex-shrink-0 mt-0.5">3</span>
+              <span>Tap <strong>"Install app"</strong></span>
+            </li>
+            <li class="flex items-start gap-2 md:gap-3">
+              <span class="w-5 h-5 md:w-6 md:h-6 bg-green-500 text-white rounded-full flex items-center justify-center text-xs md:text-sm font-bold flex-shrink-0 mt-0.5">4</span>
+              <span>Tap <strong>"Install"</strong> — done! 🎉</span>
+            </li>
+          </ol>
+        </div>
+        
+      </div>
+      
+      <div class="text-center mt-6 md:mt-8">
+        <a href="app.html" class="inline-block px-6 md:px-8 py-3 md:py-4 bg-amber-500 text-white rounded-2xl font-semibold text-base md:text-lg hover:bg-amber-600 transition-all active:scale-95 shadow-lg">
+          🐕 Open SniffSnax Now
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="container mx-auto px-4 py-12 md:py-16">
+    <div class="text-center">
+      <div class="text-5xl md:text-6xl mb-3 md:mb-4">🐕</div>
+      <h2 class="text-2xl sm:text-3xl md:text-4xl font-bold text-amber-900 mb-3 md:mb-4">
+        Your dog is waiting 👁️👁️
+      </h2>
+      <p class="text-sm md:text-base text-amber-700 mb-6 md:mb-8 max-w-md mx-auto px-4">
+        Next time they give you "the look" while you're cooking, you'll know in 2 seconds.
+      </p>
+      <a href="app.html" class="inline-block px-6 md:px-8 py-3 md:py-4 bg-amber-900 text-white rounded-2xl font-semibold text-base md:text-lg hover:bg-amber-800 transition-all active:scale-95 shadow-lg">
+        🐕 Try SniffSnax Free
+      </a>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="container mx-auto px-4 py-8 md:py-12 border-t border-amber-200 safe-bottom">
+    <div class="text-center">
+      <p class="text-sm md:text-base text-amber-800 mb-4">Made with ❤️ for dog lovers everywhere.</p>
+      
+      <a 
+        href="https://buymeacoffee.com/hannahmilan" 
+        target="_blank" 
+        rel="noopener noreferrer"
+        class="inline-flex items-center gap-2 px-5 md:px-6 py-2.5 md:py-3 bg-amber-400 hover:bg-amber-500 active:scale-95 text-amber-900 font-semibold rounded-full transition-all text-sm md:text-base"
+      >
+        ☕ Buy me a coffee
+      </a>
+      
+      <p class="text-xs md:text-sm text-amber-600 mt-5 md:mt-6">
+        Always consult your vet for specific dietary advice.
+      </p>
+      <p class="text-xs text-amber-500 mt-2">
+        © 2026 SniffSnax • Built with chaos and caffeine
+      </p>
+    </div>
+  </footer>
+
 </body>
 </html>
